@@ -1,0 +1,251 @@
+from replit import db
+import os
+import time
+import random
+import pickle
+
+go = 0
+bio = 0
+rocketlvl = 0
+fuellvl = 0
+bioeff = 0
+password = 0
+recordalt = 0
+with open('sample.txt', 'rb') as f:
+    eventinfo = pickle.load(f)
+if eventinfo[0] == 1 and not eventinfo[1] == 0:
+  event = 1
+  eventinfo[1] -= 1
+elif eventinfo[0] == 1 and eventinfo[1] == 0:
+  event = 0
+  eventinfo = [0, 0]
+  with open('sample.txt', 'wb') as f:
+    pickle.dump(eventinfo, f)
+else:
+  event = 0
+while(go == 0):
+  username = ''
+  x = int(input("Do you want to 1. load or 2. new? "))
+  if (x == 1):
+    username = input("Enter your save code: ")
+    ke = int(username)
+    username = db[username]
+    print("Succesfully loaded your information")
+    input("Press enter to continue ")
+    os.system('clear')
+  elif (x == 2):
+    print("You want to fly really deep into space.")
+    time.sleep(1)
+    print("Upgrade your fuel to fly deeper into space.")
+    time.sleep(1)
+    print("Upgrade you rocket to get higher faster.")
+    time.sleep(1)
+    print("Collect biofuel in space to upgrade your rocket")
+    time.sleep(1)
+    print("When flying your rocket:")
+    time.sleep(1)
+    print("  1. * represents your rocket")
+    time.sleep(1)
+    print("  2. = represents empty space")
+    time.sleep(1)
+    print("  3. - represents 1 biofuel")
+    time.sleep(1)
+    print("  4. + represents 10 biofuel")
+    time.sleep(1)
+    print("  5. # represents 100 bio fuel")
+    time.sleep(1)
+    input("Press enter to continue ")
+    os.system('clear')
+    ans = input("Do you want a key? Y for yes, N for no (Highly recommended): ")
+    bio = 0
+    rocketlvl = 1
+    fuellvl = 1
+    bioeff = 1
+    ke = int(len(db.keys()) + 1)
+    ans = ans.upper()
+    if ans == "Y":
+      password = random.randint(1000, 9999)
+      print("Your password is: " + str(password))
+    elif ans == "N":
+      password = 0
+    username = db[len(db.keys()) + 1] = bio, rocketlvl, fuellvl, bioeff, password, recordalt
+  if list(username)[4] == 0:
+    print("There is no password set up for this account")
+    input("Press enter to clear ")
+    os.system('clear')
+    password = 0
+    go = 1
+  elif list(username)[4] != 0:
+    password = int(input("What is the password? "))
+    if list(username)[4] != password:
+      print("Password is incorrect")
+      input("Press enter to continue ")
+      os.system('clear')
+    elif list(username)[4] == password:
+      print("You have successfully logged in")
+      input("Press enter to continue ")
+      os.system('clear')
+      go = 1
+  a = list(username)
+  bio = a[0]
+  rocketlvl = a[1]
+  fuellvl = a[2]
+  bioeff = a[3]
+  recordalt = a[5]
+
+while True:
+  db[ke] = bio, rocketlvl, fuellvl, bioeff, password, recordalt
+  power = int(round(bioeff / 10)) + 1
+  if event:
+    print("[+++ EVENT +++]")
+    print("|Boosts:      |")
+    print("|Biofuel      |")
+    print("|Altitude     |")
+  print("Record altitude:", recordalt)
+  print("Biofuel:", bio)
+  print("1.  Fly")
+  print("2.  Upgrade")
+  print("3.  Save Code")
+  if recordalt >= 100000:
+    print("4.  Start worldwide event")
+    choice = input("Please choose 1, 2, 3, or 4")
+  else:
+    choice = input("Please choose 1, 2, or 3 ")
+  os.system('clear')
+  choice = int(choice)
+  if (choice == 1):
+    repeat = fuellvl * 10 + 5 * int(round(rocketlvl / 5))
+    redo = 0
+    rocketx = 0
+    altitude = 0
+    y = 0
+    previous = ""
+    while (y != 5):
+      x = random.randint(1, 5)
+      if (x == 5):
+        x = random.randint(1, 3)
+      if (x == 1):
+        previous = previous + "-"
+      elif (x == 2):
+        previous = previous + "+"
+      elif (x == 3):
+        previous = previous + "#"
+      else:
+        previous = previous + "="
+      y = y + 1
+    while (redo != repeat):
+      if event == 1:
+        print("Your altitude is", altitude, "[event+]")
+        print("Biofuel:", bio, "[event+]")
+      else:
+        print("Your altitude is:", altitude)
+        print("Biofuel:", bio)
+      sing = ""
+      y = 0
+      while (y != 5):
+        x = random.randint(1, 5)
+        if (x == 5):
+          x = random.randint(1, 3)
+          if (x == 1):
+            sing = sing + "-"
+          elif (x == 2):
+            sing = sing + "+"
+          elif (x == 3):
+            sing = sing + "#"
+        else:
+          sing = sing + "="
+        y = y + 1
+      print(sing)
+      print(previous)
+      prevsing = list(previous)
+      previous = sing
+      if (rocketx == 0):
+        print("==*==")
+      elif (rocketx == -1):
+        print("=*===")
+      elif (rocketx == -2):
+        print("*====")
+      elif (rocketx == 1):
+        print("===*=")
+      elif (rocketx == 2):
+        print("====*")
+      z = input("Type L to move left, R to move right, enter to stay put, or type exit to go back to home ")
+      z = z.upper()
+      if (z == "EXIT"):
+        os.sysetm("clear")
+        break
+      if (z == "L"):
+        if (not(rocketx == -2)):
+          rocketx = rocketx - 1
+      if (z == "R"):
+        if (not(rocketx == 2)):
+          rocketx = rocketx + 1
+      os.system('clear')
+      redo = redo + 1
+      rocketpos = prevsing[rocketx + 2]
+      if (rocketpos == "-"):
+        bio = bio + (1 * bioeff) ** power
+        if event == 1:
+          bio = bio + (1 * bioeff) ** power
+      elif (rocketpos == "+"):
+        bio = bio + (10 * bioeff) ** power
+        if event == 1:
+          bio = bio + (10 * bioeff) ** power
+      elif (rocketpos == "#"):
+        bio = bio + (100 * bioeff) ** power
+        if event == 1:
+          bio = bio + (100 * bioeff) ** power
+      altitude = altitude + 10 * rocketlvl
+      if event == 1:
+        altitude = altitude + 10 ** rocketlvl
+    print("You flew", altitude, "miles")
+    if altitude > recordalt:
+      recordalt = altitude
+    input("Press enter to clear ")
+    os.system('clear')
+  elif(choice == 2):
+    print("Biofuel:", bio)
+    print("1.  Rocket Upgrade - $" + str(5 ** (rocketlvl + 1)) + ", level:", rocketlvl + 1)
+    print("2.  Fuel Upgrade - $" + str(5 ** (fuellvl + 1)) + ", level:", fuellvl + 1)
+    print("3.  Biofuel Usage Effieciency - $" + str(5 ** (bioeff + 1)) + ", level:", bioeff + 1)
+    x = int(input("Type in your option, or 0 to cancel "))
+    os.system('clear')
+    if (x == 0):
+      print("Press enter to clear ")
+      os.system('clear')
+    elif (x == 1 and bio >= 5 ** (rocketlvl + 1)):
+      bio = bio - 5 ** (rocketlvl + 1)
+      rocketlvl += 1
+      print("Successfully upgraded")
+      input("Press enter to clear ")
+      os.system("clear")
+    elif (x == 2 and bio >= 5 ** (fuellvl + 1)):
+      bio = bio - 5 ** (fuellvl + 1)
+      fuellvl += 1
+      print("Successfully upgraded")
+      input("Press enter to clear ")
+      os.system('clear')
+    elif (x == 3 and bio >= 5 ** (bioeff + 1)):
+      bio = bio - 5 ** (bioeff + 1)
+      bioeff += 1
+      print("Successfully upgraded")
+      input("Press enter to clear ")
+      os.system('clear')
+  elif (choice == 3):
+    print("Your save code is:", ke)
+    print("Your password is:", password)
+    input("Press enter to clear ")
+    os.system('clear')
+  elif (choice == 4 and recordalt >= 100000):
+    if event == 0:
+      print("Congradulations! You started a worldwide event!")
+      print("Please know that there is no cooldown for event starting")
+      print("This event goes on untill 100 people join")
+      event = 1
+      eventinfo = [event, 100]
+      with open('sample.txt', 'wb') as f:
+        pickle.dump(eventinfo, f)
+    else:
+      print("Sorry there is an event going on right now")
+    input("Press enter to clear ")
+    os.system("clear")
